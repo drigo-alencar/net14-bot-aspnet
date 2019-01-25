@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
+using MongoDB.Driver;
 using SimpleBot.Logic;
 
 namespace SimpleBot
@@ -13,6 +14,7 @@ namespace SimpleBot
     public class MessagesController : ApiController
     {
         static SimpleBotUser g_bot = null;
+        private IMongoDatabase db;
 
         public MessagesController()
         {
@@ -21,6 +23,8 @@ namespace SimpleBot
             {
                 g_bot = new SimpleBotUser();
             }
+
+            db = new MongoClient().GetDatabase("BotBase");
         }
 
         [ResponseType(typeof(void))]
@@ -29,6 +33,7 @@ namespace SimpleBot
             if ( activity != null && activity.Type == ActivityTypes.Message)
             {
                 await HandleActivityAsync(activity);
+                db.GetCollection<Activity>("activities").InsertOne(activity);
             }
 
             // HTTP 202
