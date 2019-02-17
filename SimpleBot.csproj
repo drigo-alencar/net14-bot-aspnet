@@ -137,9 +137,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Logic\SimpleMessage.cs" />
-    <Compile Include="Logic\SimpleBotUser.cs" />
+    <Compile Include="Domain\SimpleMessage.cs" />
+    <Compile Include="Domain\SimpleBotUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\MessageRepository.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
