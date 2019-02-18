@@ -1,37 +1,53 @@
-﻿using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
+using MongoDB.Driver;
 
 namespace SimpleBot.Repositories
 {
-	public class UnitOfWork
-	{
-		private const string MONGO_CONNECTION_STRING_NAME = "Mongo";
-		private const string MONGO_DATABASE = "BotBase";
+    public class UnitOfWork
+    {
+        private const string MONGO_CONNECTION_STRING_NAME = "Mongo";
+        private const string MONGO_DATABASE = "BotBase";
 
-		private IMongoDatabase db;
-		private MessageRepository messageRepository;
+        private readonly IMongoDatabase db;
+        private MessageRepository messageRepository;
+        private UserRepository userRepository;
 
-		public UnitOfWork()
-		{
-			db = new MongoClient(GetConnectionString()).GetDatabase(MONGO_DATABASE);
-		}
+        public UnitOfWork()
+        {
+            db = new MongoClient(GetConnectionString()).GetDatabase(MONGO_DATABASE);
+        }
 
-		private static string GetConnectionString()
-		{
-			return ConfigurationManager.ConnectionStrings[MONGO_CONNECTION_STRING_NAME].ConnectionString;
-		}
+        public MessageRepository MessageRepository
+        {
+            get
+            {
+                if (messageRepository == null)
+                {
+                    messageRepository = new MessageRepository(db);
+                }
 
-		public MessageRepository MessageRepository
-		{
-			get
-			{
-				if (this.messageRepository == null) { this.messageRepository = new MessageRepository(db); }
-				return this.messageRepository;
-			}
-		}
-	}
+                return messageRepository;
+            }
+        }
+
+        public UserRepository UserRepository
+        {
+            get
+            {
+                if (userRepository == null)
+                {
+                    userRepository = new UserRepository(db);
+                }
+
+                return userRepository;
+            }
+        }
+
+        private static string GetConnectionString()
+        {
+            return ConfigurationManager.ConnectionStrings[MONGO_CONNECTION_STRING_NAME].ConnectionString;
+        }
+
+        //fazer para user
+    }
 }

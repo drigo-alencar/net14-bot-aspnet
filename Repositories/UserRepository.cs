@@ -1,27 +1,33 @@
 ﻿using MongoDB.Driver;
 using SimpleBot.Logic;
-using System;
-using System.Configuration;
+using System.Linq;
 
 namespace SimpleBot.Repositories
 {
-	public class UserRepository
-	{
-		private IMongoCollection<SimpleBotUser> collection;
+    public class UserRepository
+    {
+        private const string COLLECTION_NAME = "users";
 
-		public UserRepository(IMongoDatabase db)
-		{
-			this.collection = db.GetCollection<SimpleBotUser>("users");
-		}
+        private IMongoCollection<SimpleBotUser> collection;
 
-		internal SimpleBotUser GetProfile(SimpleBotUser user)
-		{
-			return null;
-		}
+        public UserRepository(IMongoDatabase db)
+        {
+            collection = db.GetCollection<SimpleBotUser>(COLLECTION_NAME);
+        }
 
-		internal void SetProfile(SimpleBotUser user)
-		{
-			
-		}
-	}
+        internal SimpleBotUser GetProfile(string id)
+        {
+            return collection.Find(Builders<SimpleBotUser>
+                .Filter.Eq("Id", id)).FirstOrDefault();
+        }
+
+        internal void SetProfile(SimpleBotUser user)
+        {
+            user.Count += 1;
+
+            collection.ReplaceOne(Builders<SimpleBotUser>.Filter.Eq(s => s.Id, user.Id), user);
+        }
+
+        //fazer os métodos 
+    }
 }
